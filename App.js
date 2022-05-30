@@ -1,112 +1,78 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- * @flow strict-local
- */
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, View } from 'react-native';
+import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
+import { useState } from 'react';
+import { Input,Text } from 'react-native-elements';
+import { Feather as Icon} from '@expo/vector-icons';
 
-import React from 'react';
-import type {Node} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+export default function App() {
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+  const [data, setData] = useState({})
+  const [text, setText] = useState('BTCUSDT')
+  const [symbol, setSymbol] = useState('btcusdt')
 
-const Section = ({children, title}): Node => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const { lastJsonMessage } = useWebSocket(`wss://stream.binance.com:9443/ws/${symbol}@ticker`,{
+      onMessage: () => {
+        if(lastJsonMessage) {
+            setData(lastJsonMessage)
+        }
+      },
+      onError: (event) => alert(event),
+      shouldReconnect: () => true,
+      reconnectInterval: 3000
+  })
+
+  const searchButton = <Icon.Button
+  name="search"
+  size={24}
+  color="black"
+  backgroundColor="transparent"
+  onPress={evt => setSymbol(text.toLowerCase()) }
+  />
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.container}>
+      <Text>CriptoCoins 1.0</Text>
+      <Input
+        autoCapitalize='characters'
+        leftIcon={<Icon name="dollar-sign" size={24} colors="black" />} 
+        rightIcon={searchButton}
+        value={text} 
+        onChangeText={setText}   
+      />
+      <View style={styles.linha}>
+        <Text style={styles.rotulo}>Preço Atual: </Text>
+        <Text style={styles.conteudo}>{data.c}</Text>
+      </View>
+      <View style={styles.linha}>
+        <Text style={styles.rotulo}>Variação %: </Text>
+        <Text style={styles.conteudo}>{data.P}%</Text>
+      </View>
+      <View style={styles.linha}>
+        <Text style={styles.rotulo}>Volume: </Text>
+        <Text style={styles.conteudo}>{data.v}</Text>
+      </View>
+        <StatusBar style="auto" />
     </View>
   );
-};
-
-const App: () => Node = () => {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.js</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-};
+}
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flexDirection: 'column',
+    marginTop: 40,
+    margin: 20,
+    alignContent: 'center'  
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  rotulo: {
+    fontWeight:'bold',
+    fontSize: 24
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
+  conteudo: {
+    fontSize: 24
   },
-  highlight: {
-    fontWeight: '700',
-  },
+  linha: {
+    flexDirection: 'row',
+    width: '100%'
+  }
 });
-
-export default App;
