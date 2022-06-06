@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, FlatList } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import { useState, useEffect } from 'react';
 import { Input, Text } from 'react-native-elements';
@@ -13,7 +13,7 @@ import { Dimensions } from 'react-native'
 
 export default function App() {
   
-  const [dataname, setDataName] = useState([]);
+  const [data, setData] = useState([]);
   const [text, setText] = useState('BTCUSDT');
   const [symbol, setSymbol] = useState('btcusdt');
   const [coinsGrafichList, setcoinsGrafichList] = useState([0]);
@@ -45,9 +45,20 @@ export default function App() {
     }
     return number;
   }
-    const date = new Date();
+  const { lastJsonMessage } = useWebSocket(`wss://stream.binance.com:9443/ws/${symbol}@ticker`,{
+      onMessage: () => {
+        if(lastJsonMessage) {
+            setData(lastJsonMessage)
+        }
+      },
+      onError: (event) => alert(event),
+      shouldReconnect: () => true,
+      reconnectInterval: 3000
+  })
+    
 
    function url(qtdDias) {
+    const date = new Date();
     const listLastDays = qtdDias;
     const end_date = 
     `${date.getFullYear()}-${addZero(date.getMonth() + 1)}-${addZero(date.getDate())}`;
@@ -94,21 +105,16 @@ useEffect(() => {
         onChangeText={setText}
       />
       <View style={styles.linha}>
-     {/* <Text>{dataname.vol}</Text> */}
-
-
-      <Text style={styles.rotulo}></Text>
-
-        {/* <Text style={styles.rotulo}>Preço Atual: </Text>
-        <Text style={styles.conteudo}>{data.c}</Text> */}
+        <Text style={styles.rotulo}>Preço Atual: </Text>
+        <Text style={styles.conteudo}>{data.c}</Text>
       </View>
       <View style={styles.linha}>
-        {/* <Text style={styles.rotulo}>Variação %: </Text>
-        <Text style={styles.conteudo}>{data.P}%</Text> */}
+        <Text style={styles.rotulo}>Variação %: </Text>
+        <Text style={styles.conteudo}>{data.P}%</Text>
       </View>
       <View style={styles.linha}>
-        {/* <Text style={styles.rotulo}>Volume: </Text>
-        <Text style={styles.conteudo}>{data.v}</Text> */}
+        <Text style={styles.rotulo}>Volume: </Text>
+        <Text style={styles.conteudo}>{data.v}</Text>
       </View>
       <View>
       <LineChart   data={{
