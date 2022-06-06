@@ -4,11 +4,9 @@ import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
 import { useState, useEffect } from 'react';
 import { Input, Text } from 'react-native-elements';
 import { FontAwesome, MaterialCommunityIcons  } from '@expo/vector-icons';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import * as React from "react";
 import { Header } from 'react-native-elements';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
-import { ScrollView } from 'react-native-gesture-handler';
 import { LineChart} from "react-native-chart-kit";
 import { Dimensions } from 'react-native'
 
@@ -119,7 +117,7 @@ useEffect(() => {
           data: coinsGrafichList,
         }]
       }}
-      width={Dimensions.get('window').width} // from react-native
+      width={Dimensions.get('window').width}
       height={220}
       yAxisLabel="$"
         yAxisSuffix="k"
@@ -130,7 +128,7 @@ useEffect(() => {
         backgroundColor: "#000000",
         backgroundGradientFrom: "#232323",
         backgroundGradientTo: "#3F3F3F",
-        decimalPlaces: 0, // optional, defaults to 2dp
+        decimalPlaces: 0, 
         color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
         labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
         propsForDots: {
