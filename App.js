@@ -9,15 +9,248 @@ import { Header } from 'react-native-elements';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { LineChart} from "react-native-chart-kit";
 import { Dimensions } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default function App() {
   
+  const coins = ["AAVE",  "ACMFT",
+  "ACORDO01",
+  "ADA",
+  "ADS",
+  "AGIX",
+  "AIOZ",
+  "ALCX",
+  "ALGO",
+  "ALICE",
+  "ALLFT",
+  "ALPHA",
+  "AMFT",
+  "AMP",
+  "ANKR",
+  "ANT",
+  "APE",
+  "API3",
+  "ARGFT",
+  "ASRFT",
+  "ATLAS",
+  "ATMFT",
+  "ATOM",
+  "AUDIO",
+  "AVAX",
+  "AXS",
+  "BADGER",
+  "BAL",
+  "BAND",
+  "BARFT",
+  "BAT",
+  "BCH",
+  "BICO",
+  "BLZ",
+  "BNT",
+  "BTC",
+  "BTRST",
+  "CAIFT",
+  "CEEK",
+  "CHZ",
+  "CITYFT",
+  "CLV",
+  "COMP",
+  "COTI",
+  "CRV",
+  "CSCONS01",
+  "CSCONS02",
+  "CTSI",
+  "CVC",
+  "CVX",
+  "DAI",
+  "DG",
+  "DIA",
+  "DOGE",
+  "DOT",
+  "DPI",
+  "DYDX",
+  "ENJ",
+  "ENS",
+  "ETH",
+  "FARM",
+  "FET",
+  "FIL",
+  "FLOKI",
+  "GALA",
+  "GALFT",
+  "GALOFT",
+  "GHST",
+  "GMT",
+  "GNO",
+  "GODS",
+  "GRT",
+  "GST",
+  "HIGH",
+  "HOT",
+  "ICP",
+  "ILV",
+  "IMOB01",
+  "IMOB02",
+  "IMX",
+  "INTERFT",
+  "JASMY",
+  "JUVFT",
+  "KEEP",
+  "KNC",
+  "KP3R",
+  "LDO",
+  "LINK",
+  "LOOKS",
+  "LPT",
+  "LQTY",
+  "LRC",
+  "LTC",
+  "MANA",
+  "MATIC",
+  "MBCCSH01",
+  "MBCCSH02",
+  "MBCCSH03",
+  "MBCONS01",
+  "MBCONS02",
+  "MBFP01",
+  "MBFP02",
+  "MBFP03",
+  "MBFP04",
+  "MBFP05",
+  "MBFP06",
+  "MBFP07",
+  "MBPRK01",
+  "MBPRK02",
+  "MBPRK03",
+  "MBPRK04",
+  "MBPRK05",
+  "MBPRK06",
+  "MBPRK07",
+  "MBSANTOS01",
+  "MBVASCO01",
+  "MC",
+  "MCO2",
+  "MENGOFT",
+  "METIS",
+  "MINA",
+  "MIR",
+  "MKR",
+  "MPL",
+  "MVI",
+  "NAVIFT",
+  "NFT00",
+  "NFT10",
+  "NFT11",
+  "NFT12",
+  "NFT13",
+  "NFT14",
+  "NFT15",
+  "NFT16",
+  "NFT17",
+  "NFT18",
+  "NFT19",
+  "NFT2",
+  "NFT20",
+  "NFT21",
+  "NFT22",
+  "NFT23",
+  "NFT24",
+  "NFT25",
+  "NFT26",
+  "NFT27",
+  "NFT28",
+  "NFT29",
+  "NFT3",
+  "NFT30",
+  "NFT31",
+  "NFT32",
+  "NFT33",
+  "NFT34",
+  "NFT35",
+  "NFT36",
+  "NFT37",
+  "NFT4",
+  "NFT5",
+  "NFT6",
+  "NFT7",
+  "NFT8",
+  "NFT9",
+  "NFTI",
+  "NFTOKN01",
+  "OCEAN",
+  "OGFT",
+  "OGN",
+  "OMG",
+  "OPUL",
+  "OXT",
+  "PAXG",
+  "PERP",
+  "PFLFT",
+  "PLA",
+  "POLS",
+  "POLY",
+  "PORFT",
+  "POWR",
+  "PSGFT",
+  "QNT",
+  "RACA",
+  "RAD",
+  "RARE",
+  "RARI",
+  "REN",
+  "REQ",
+  "RLY",
+  "RNDR",
+  "ROSE",
+  "SACI",
+  "SAND",
+  "SAUBERFT",
+  "SCCPFT",
+  "SDAO",
+  "SHIB",
+  "SKL",
+  "SLP",
+  "SNX",
+  "SOL",
+  "SPELL",
+  "SPFCFT",
+  "SRM",
+  "STG",
+  "STORJ",
+  "STVFT",
+  "STX",
+  "SUPER",
+  "SUSHI",
+  "SYN",
+  "THFT",
+  "TLM",
+  "TRB",
+  "TRU",
+  "UFCFT",
+  "UMA",
+  "UNI",
+  "USDC",
+  "USDP",
+  "VERDAO",
+  "VSPRK01",
+  "WBTC",
+  "WBX",
+  "WLUNA",
+  "XLM",
+  "XRP",
+  "XTZ",
+  "YBOFT",
+  "YFI",
+  "YGG",
+  "ZRX",
+  "FTBRL"]
   const [data, setData] = useState([]);
-  const [text, setText] = useState('BTCUSDT');
-  const [symbol, setSymbol] = useState('btcusdt');
+  const [text, setText] = useState('BTC');
+  const [symbol, setSymbol] = useState('btc');
   const [coinsGrafichList, setcoinsGrafichList] = useState([0]);
   const [days, setdays] = useState(180);
+  const [busca,setbusca] = useState(" ");
   const [updateData, setupdateData] = useState(true);
 
   const searchButton = <FontAwesome.Button
@@ -36,27 +269,26 @@ export default function App() {
     name="hand-coin" 
     size={24} 
     color="black" />
-
-
-
+  
    function addZero(number) {
     if (number <= 9) {
       return "0" + number;
     }
     return number;
   }
-  const { lastJsonMessage } = useWebSocket(`wss://stream.binance.com:9443/ws/${symbol}@ticker`,{
-      onMessage: () => {
-        if(lastJsonMessage) {
-            setData(lastJsonMessage)
-        }
-      },
-      onError: (event) => alert(event),
-      shouldReconnect: () => true,
-      reconnectInterval: 3000
-  })
+  
+  //const { lastJsonMessage } = useWebSocket(`wss://stream.binance.com:9443/ws/@ticker`,{
+      // onMessage: () => {
+        // if(lastJsonMessage) {
+            // setData(lastJsonMessage)
+        // }
+      // },
+      // onError: (event) => alert(event),
+      // shouldReconnect: () => true,
+      // reconnectInterval: 3000
+  //})
     
-
+  //https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30
    function url(qtdDias) {
     const date = new Date();
     const listLastDays = qtdDias;
@@ -65,10 +297,24 @@ export default function App() {
     date.setDate(date.getDate() - listLastDays);
     const start_date = 
     `${date.getFullYear()}-${addZero(date.getMonth() + 1)}-${addZero(date.getDate())}`;
-    return `https://api.coindesk.com/v1/bpi/historical/close.json?start=${start_date}&end=${end_date}`;;
+    return `https://api.coindesk.com/v1/bpi/historical/close.json?start=${start_date}&end=${end_date}`;
   }
 
-  async function getPriceCoinsGraphic(url) {
+  fetch(`https://www.mercadobitcoin.net/api/${symbol}/ticker/`)
+  .then(resposta => resposta.json())
+    .then( json => {
+      const coin = {
+        vol: json.ticker.vol,
+        last: json.ticker.last,
+        low: json.ticker.low,
+      };
+      setData(coin)
+    })
+    .catch(() => {
+      Alert.alert('Erro', 'Não foi possível carregar os dados');
+    });
+
+    async function getPriceCoinsGraphic(url) {
     let responseG = await fetch(url);
     let returnApiG = await responseG.json();
     let selectListQuotationsG = returnApiG.bpi;
@@ -102,19 +348,30 @@ useEffect(() => {
         leftIcon={coin }
         rightIcon={searchButton}
         value={text}
-        onChangeText={setText}
+        onChangeText={setbusca}
       />
+      <ScrollView>
+        {
+         coins.filter((coin)=>{
+          if (busca ==="") {
+            return coin
+          }else if (coin.toLowerCase().includes(busca.toLowerCase())) {
+            return coin
+          }         
+         }).map((item, index)=>(<Text onPress={()=>{setText(item)}} key={index}>{item}</Text>))
+        }
+      </ScrollView>
       <View style={styles.linha}>
         <Text style={styles.rotulo}>Preço Atual: </Text>
-        <Text style={styles.conteudo}>{data.c}</Text>
+        <Text style={styles.conteudo}>{data.last}</Text>
       </View>
       <View style={styles.linha}>
         <Text style={styles.rotulo}>Variação %: </Text>
-        <Text style={styles.conteudo}>{data.P}%</Text>
+        <Text style={styles.conteudo}>{data.low}%</Text>
       </View>
       <View style={styles.linha}>
         <Text style={styles.rotulo}>Volume: </Text>
-        <Text style={styles.conteudo}>{data.v}</Text>
+        <Text style={styles.conteudo}>{data.vol}</Text>
       </View>
       <View>
       <LineChart   data={{
