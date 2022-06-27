@@ -1,6 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
-import { useWebSocket } from 'react-use-websocket/dist/lib/use-websocket';
+import { StyleSheet, View, Modal,Button } from 'react-native';
 import { useState, useEffect } from 'react';
 import { Input, Text } from 'react-native-elements';
 import { FontAwesome, MaterialCommunityIcons  } from '@expo/vector-icons';
@@ -9,8 +8,9 @@ import { Header } from 'react-native-elements';
 import { Icon } from 'react-native-elements/dist/icons/Icon';
 import { LineChart} from "react-native-chart-kit";
 import { Dimensions } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
-
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { getMarketData } from './services/cryptoService';
+import Lista from './componentes/Lista_coins';
 
 export default function App() {
   
@@ -246,6 +246,8 @@ export default function App() {
   "ZRX",
   "FTBRL"]
   const [data, setData] = useState([]);
+  const [data1, setData1] = useState([]);
+  const [modal,setmodal] = useState(false);
   const [text, setText] = useState('BTC');
   const [symbol, setSymbol] = useState('btc');
   const [coinsGrafichList, setcoinsGrafichList] = useState([0]);
@@ -300,19 +302,14 @@ export default function App() {
     return `https://api.coindesk.com/v1/bpi/historical/close.json?start=${start_date}&end=${end_date}`;
   }
 
-  fetch(`https://www.mercadobitcoin.net/api/${symbol}/ticker/`)
-  .then(resposta => resposta.json())
-    .then( json => {
-      const coin = {
-        vol: json.ticker.vol,
-        last: json.ticker.last,
-        low: json.ticker.low,
-      };
-      setData(coin)
-    })
-    .catch(() => {
-      Alert.alert('Erro', 'Não foi possível carregar os dados');
-    });
+  useEffect(() => {
+    const fetchMarketData = async () => {
+      const marketData = await getMarketData();
+      setData1(marketData);
+    }
+
+    fetchMarketData();
+  }, [])
 
     async function getPriceCoinsGraphic(url) {
     let responseG = await fetch(url);
@@ -334,7 +331,10 @@ useEffect(() => {
   }
 }, [updateData]);
 
-
+const modalAbrir = (item) => {
+  setcoinsGrafichList(item);
+  setmodal(true);
+}
   return (
     <View style={styles.container}>
       <Header
@@ -345,68 +345,71 @@ useEffect(() => {
       />
       <Input
         autoCapitalize='characters'
-        leftIcon={coin }
+        leftIcon={coin}
         rightIcon={searchButton}
         value={text}
         onChangeText={setbusca}
       />
-      <ScrollView>
-        {
-         coins.filter((coin)=>{
-          if (busca ==="") {
-            return coin
-          }else if (coin.toLowerCase().includes(busca.toLowerCase())) {
-            return coin
-          }         
-         }).map((item, index)=>(<Text onPress={()=>{setText(item)}} key={index}>{item}</Text>))
-        }
-      </ScrollView>
-      <View style={styles.linha}>
-        <Text style={styles.rotulo}>Preço Atual: </Text>
-        <Text style={styles.conteudo}>{data.last}</Text>
-      </View>
-      <View style={styles.linha}>
-        <Text style={styles.rotulo}>Variação %: </Text>
-        <Text style={styles.conteudo}>{data.low}%</Text>
-      </View>
-      <View style={styles.linha}>
-        <Text style={styles.rotulo}>Volume: </Text>
-        <Text style={styles.conteudo}>{data.vol}</Text>
-      </View>
-      <View>
-      <LineChart   data={{
-        labels: ['Janeiro', 'Fevereiro', 'Março' ,'Abril' ,'Maio', 'Junho'],
-        datasets: [{
-          data: coinsGrafichList,
-        }]
-      }}
-      width={Dimensions.get('window').width}
-      height={220}
-      yAxisLabel="$"
-        yAxisSuffix="k"
-        withVerticalLines={false}
-        yLabelsOffset={1}
-        withVerticalLabels={true}
-      chartConfig={{
-        backgroundColor: "#000000",
-        backgroundGradientFrom: "#232323",
-        backgroundGradientTo: "#3F3F3F",
-        decimalPlaces: 0, 
-        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-        propsForDots: {
-          r: "1",
-          strokeWidth: "1",
-          stroke: "#f50d41",
-        },
-      }}
-      bezier
-      style={{
-        marginVertical: 8,
-        borderRadius: 16
-      }}
-  />
-      </View>
+      <FlatList
+        keyExtractor={(item) => item.id}
+        data={data1}
+        renderItem={({ item }) => (
+          <Lista
+            nome={item.name}
+            nome_cripto={item.symbol}
+            precoAtual={item.current_price}
+            precoPorcentagem={item.price_change_percentage_7d_in_currency}
+            logoUrl={item.image}
+            onPress={() => modalAbrir(item)}
+          />
+        )}
+              />
+        <Modal
+          animationType='slide'
+          transparent={true}
+          visible={modal}
+        >
+          <View style={styles.modal}>
+            <LineChart   data={{
+              labels: ['Janeiro', 'Fevereiro', 'Março' ,'Abril' ,'Maio', 'Junho'],
+              datasets: [{
+                data: coinsGrafichList,
+              }]
+            }}
+            width={Dimensions.get('window').width}
+            height={220}
+            yAxisLabel="$"
+              yAxisSuffix="k"
+              withVerticalLines={false}
+              yLabelsOffset={1}
+              withVerticalLabels={true}
+            chartConfig={{
+              backgroundColor: "#000000",
+              backgroundGradientFrom: "#232323",
+              backgroundGradientTo: "#3F3F3F",
+              decimalPlaces: 0, 
+              color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+              propsForDots: {
+                r: "1",
+                strokeWidth: "1",
+                stroke: "#f50d41",
+              },
+            }}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+          <Button
+            title = "Fechar"
+            onPress = {()=>{setmodal(false)}}
+          />
+          </View>
+
+        </Modal>
+      
       <StatusBar style="auto" />
     </View>
   );
@@ -419,6 +422,12 @@ const styles = StyleSheet.create({
     // marginTop: 40,
     // margin: 20,
     alignContent: 'center'
+  },
+  modal:{
+    flex: 1,
+    alignItems: 'center',
+    padding: 100,
+    marginTop:"50%"
   },
   rotulo: {
     fontWeight: 'bold',
