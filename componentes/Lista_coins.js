@@ -5,7 +5,7 @@ const Lista = ({ nome, nome_cripto, precoAtual, precoPorcentagem, logoUrl, onPre
   const corPreco = precoPorcentagem > 0 ? '#34C759' : '#FF3B30';
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <TouchableOpacity onPress={onPress} >
       <View style={styles.item}>
         
         <View style={styles.conteinerEsquerdo}>
