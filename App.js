@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View, Modal,Button } from 'react-native';
+import { StyleSheet, View, Modal, Button, Image } from 'react-native';
 import { useState, useEffect } from 'react';
-import {  Text } from 'react-native-elements';
+import { Text } from 'react-native-elements';
 import * as React from "react";
 import { Header } from 'react-native-elements';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
@@ -11,9 +11,9 @@ export default function App() {
 
   const [data, setData] = useState([]);
   const [data1, setData1] = useState([]);
-  const [modal,setmodal] = useState(false);
+  const [modal, setmodal] = useState(false);
 
-  
+
   useEffect(() => {
     const fetchMarketData = async () => {
       const marketData = await getMarketData();
@@ -23,10 +23,10 @@ export default function App() {
   }, [])
 
 
-const modalAbrir = (item) => {
-  setData(item)
-  setmodal(true);
-}
+  const modalAbrir = (item) => {
+    setData(item)
+    setmodal(true);
+  }
 
   return (
     <View style={styles.container}>
@@ -35,7 +35,7 @@ const modalAbrir = (item) => {
         placement="left"
         centerComponent={{ text: 'CriptoCoins 1.0', style: { color: 'black', fontWeight: "bold", fontSize: 20 } }}
       />
-      
+
       <FlatList
         keyExtractor={(item) => item.id}
         data={data1}
@@ -46,27 +46,33 @@ const modalAbrir = (item) => {
             precoAtual={item.current_price}
             precoPorcentagem={item.price_change_percentage_7d_in_currency}
             logoUrl={item.image}
-            onPress={() => modalAbrir(item,item.id)}
+            onPress={() => modalAbrir(item, item.id)}
           />
         )}
-              />
-        <Modal
-          animationType='slide'
-          transparent={true}
-          visible={modal}
-        >
-          <View style={styles.modal}>
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}> Alta nas últimas 24 horas: {data.high_24h} </Text>
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}> Baixa nas últimas 24 horas: {data.low_24h}</Text>
-            <Text style={{ color: 'white', fontWeight: 'bold', fontSize: 20 }}> Preço atual: {data.current_price}</Text>
-          <Button
-            title = "Fechar"
-            onPress = {()=>{setmodal(false)}}
+      />
+      <Modal
+        animationType='slide'
+        transparent={true}
+        visible={modal}
+      >
+        <View style={styles.modal}>
+          <Image
+            style={styles.imagem}
+            source={{uri:data.image}}
           />
-          </View>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 20, margin: 10 }}> Alta nas últimas 24 horas: $ {data.high_24h} </Text>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 20,margin: 10 }}> Baixa nas últimas 24 horas: $ {data.low_24h}</Text>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 20, margin: 10 }}> Diferença nas 24 horas: $ {data.price_change_24h.toFixed(6)}</Text>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 20, margin: 10 }}> Volume: V {data.total_volume}</Text>
+          <Text style={{ color: 'black', fontWeight: 'bold', fontSize: 20, margin: 10 }}> Preço atual: $ {data.current_price}</Text>
+          <Button
+            title="Fechar"
+            onPress={() => { setmodal(false) }}
+          />
+        </View>
 
-        </Modal>
-      
+      </Modal>
+
       <StatusBar style="auto" />
     </View>
   );
@@ -80,15 +86,21 @@ const styles = StyleSheet.create({
     // margin: 20,
     alignContent: 'center'
   },
-  modal:{
+  modal: {
     flex: 1,
     alignItems: 'center',
     padding: 50,
-    backgroundColor:"black",
-    marginTop:"90%",
+    backgroundColor: "gold",
+    marginTop: "90%",
     fontWeight: 'bold',
     fontSize: 24,
-    color:"white"
+    color: "white",
+    borderRadius: 3,
+  },
+
+  imagem: {
+    width: 100,
+    height: 100,
   },
 
   rotulo: {
